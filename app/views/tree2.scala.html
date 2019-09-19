@@ -1,0 +1,42 @@
+@(device: String)()
+
+<div class="row column">
+
+
+</div>
+
+
+<script src="@routes.Assets.versioned("javascripts/jquery.js")"> type = "text/javascript" ></script>
+
+
+
+    <!-- 3 setup a container element -->
+    <!-- in this example the tree is populated from inline HTML -->
+@*
+<div id="jstree">
+<ul>
+<li>Root node 1
+<ul>
+<li id="child_node_1">Child node 1</li>
+<li>Child node 2</li>
+</ul>
+</li>
+<li>Root node 2</li>
+</ul>
+</div>
+*@
+<div id="using_json" class="demo jstree jstree-3 jstree-default" role="tree" aria-multiselectable="true" tabindex="0" aria-activedescendant="j3_1" aria-busy="false"><ul class="jstree-container-ul jstree-children" role="group"><li role="treeitem" aria-selected="false" aria-level="1" aria-labelledby="j3_1_anchor" id="j3_1" class="jstree-node  jstree-leaf"><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j3_1_anchor"><i class="jstree-icon jstree-themeicon" role="presentation"></i>
+    Simple root node</a></li><li role="treeitem" aria-selected="true" aria-level="1" aria-labelledby="j3_2_anchor" aria-expanded="true" id="j3_2" class="jstree-node  jstree-open jstree-last"><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor  jstree-clicked" href="#" tabindex="-1" id="j3_2_anchor"><i class="jstree-icon jstree-themeicon" role="presentation"></i>
+    Root node 2</a><ul role="group" class="jstree-children"><li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j3_3_anchor" id="j3_3" class="jstree-node  jstree-leaf"><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j3_3_anchor"><i class="jstree-icon jstree-themeicon" role="presentation"></i>
+    Child 1</a></li><li role="treeitem" aria-selected="false" aria-level="2" aria-labelledby="j3_4_anchor" id="j3_4" class="jstree-node  jstree-leaf jstree-last"><i class="jstree-icon jstree-ocl" role="presentation"></i><a class="jstree-anchor" href="#" tabindex="-1" id="j3_4_anchor"><i class="jstree-icon jstree-themeicon" role="presentation"></i>
+    Child 2</a></li></ul></li></ul>
+</div>
+
+
+<link rel='stylesheet' href="@routes.Assets.versioned("css/style.min.css")">
+
+<script src="@routes.Assets.versioned("javascripts/jstree.min.js")"> type = "text/javascript" </script>
+
+<script src="@routes.Assets.versioned("javascripts/jstree_sm.js")"> type = "text/javascript" </script>
+
+
