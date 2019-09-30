@@ -5,6 +5,12 @@ GET         /                                                         controller
 GET         /deviceIndex/:device                                      controllers.SmApplication.deviceIndex(device)
 GET         /debugQry/:device                                         controllers.SmApplication.debugQry(device)
 
++ nocsrf
+POST        /deviceTree/:device                                       controllers.SmApplication.deviceTree(device)
+
++ nocsrf
+POST        /deviceTree2/:device                                       controllers.SmApplication.deviceTree2(device)
+
 
 + nocsrf
 POST        /refreshDevice                                            controllers.SmSyncDeviceStream.refreshDevice

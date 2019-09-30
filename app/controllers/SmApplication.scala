@@ -54,6 +54,14 @@ class SmApplication @Inject()(val database: DBService)
     Ok(views.html.smd_index(device, ConfigFactory.load("scanImport.conf").getInt("Category.maxFilesInDir")))
   }
 
+  def deviceTree(device: String): Action[AnyContent] = Action {
+    Ok(views.html.tree(device))
+  }
+
+  def deviceTree2(device: String): Action[AnyContent] = Action {
+    Ok(views.html.tree2(device))
+  }
+
   def getByDevice(device: String): Action[AnyContent] = Action.async {
     val maxRes = 200
 
