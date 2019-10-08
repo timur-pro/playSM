@@ -18,7 +18,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
   * Created by ns on 23.01.2017.
   */
 @Singleton
-class SmApplication @Inject()(implicit assetsFinder: AssetsFinder,val database: DBService)
+class SmApplication @Inject()(implicit assetsFinder: AssetsFinder, val database: DBService)
   extends InjectedController {
 
   val logger = play.api.Logger(getClass)
@@ -63,7 +63,7 @@ class SmApplication @Inject()(implicit assetsFinder: AssetsFinder,val database: 
 
     logger.info(s"smFileCards # maxRes=$maxRes | device = $device")
 
-    database.runAsync(Tables.SmFileCard.filter(_.storeName === device).take(maxRes).to[List].result).map { rowSeq =>
+    database.runAsync(Tables.SmFileCard.filter(_.storeName === device).take(maxRes).result).map { rowSeq =>
       val fcSeq = rowSeq.map(SmFileCard(_))
       Ok(views.html.filecards(fcSeq))
     }
@@ -80,7 +80,6 @@ class SmApplication @Inject()(implicit assetsFinder: AssetsFinder,val database: 
         .filterNot(_.fParent endsWith "_files")
         .sortBy(_.fLastModifiedDate.desc)
         .take(maxRes)
-        .to[List]
         .result
     ).map { rowSeq =>
       val fcSeq = rowSeq.map(SmFileCard(_))
@@ -92,10 +91,10 @@ class SmApplication @Inject()(implicit assetsFinder: AssetsFinder,val database: 
     database.runAsync(Tables.SmFileCard.groupBy(p => p.storeName)
       .map { case (storeName, cnt) => (storeName, cnt.map(_.storeName).length) }
       .sortBy(_._1)
-      .to[List].result)
-      .map { rowSeq =>
-        Ok(views.html.storename(rowSeq))
-      }
+      .result
+    ).map { rowSeq =>
+      Ok(views.html.storename(rowSeq))
+    }
   }
 
   def debugQry(device: String): Action[AnyContent] = Action.async {
@@ -127,7 +126,6 @@ class SmApplication @Inject()(implicit assetsFinder: AssetsFinder,val database: 
         .filter(_.storeName === device).filter(_.fParent startsWith path + OsConf.fsSeparator)
       )
       .take(ctnRec)
-      .to[List]
       .result
     ).map { rowSeq =>
       val fcSeq = rowSeq.map(SmFileCard(_))

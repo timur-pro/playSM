@@ -40,7 +40,7 @@ class SmSyncDeviceStream @Inject()(val database: DBService)
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
   def refreshDevice: Action[AnyContent] = Action.async {
-    database.runAsync(Tables.SmDevice.sortBy(_.uid).to[List].map(_.uid).result).map { rowSeq =>
+    database.runAsync(Tables.SmDevice.sortBy(_.uid).map(_.uid).result).map { rowSeq =>
       logger.debug(pprint.apply(rowSeq).toString())
 
       FileUtils.getDevicesInfo() onComplete {
@@ -200,9 +200,9 @@ class SmSyncDeviceStream @Inject()(val database: DBService)
     val hSmBoFileCard = FileUtils.getFilesFromStore(impPath, deviceUid, mountPoint, sExclusionFile)
     val hInMap = database.runAsync(Tables.SmFileCard
       .filter(_.storeName === deviceUid).filter(_.fParent === impPath)
-      .map(fld => (fld.id, fld.fLastModifiedDate)).to[List].result)
+      .map(fld => (fld.id, fld.fLastModifiedDate)).result)
       .map { dbGet =>
-        val hInMap: Map[String, List[(String, LocalDateTime)]] = dbGet.groupBy(_._1)
+        val hInMap: Map[String, Seq[(String, LocalDateTime)]] = dbGet.groupBy(_._1)
         //        logger.debug(s"$funcName -> path = [$impPath]  hSmBoFileCard.size = [${hSmBoFileCard.size}]  rowSeq.size = [${dbGet.size}]   get 2 lists time: ${System.currentTimeMillis - start} ms")
         hInMap
       }
@@ -270,7 +270,7 @@ class SmSyncDeviceStream @Inject()(val database: DBService)
         database.runAsync(Tables.SmFileCard
           .filter(_.storeName === deviceUid)
           .map(fld => fld.fParent)
-          .distinct.to[List].result)
+          .distinct.result)
           .map { dbGet =>
             dbGet.foreach { cPath =>
               if (!Paths.get(device.get.mountpoint + OsConf.fsSeparator + cPath).toFile.exists) {
@@ -302,7 +302,7 @@ class SmSyncDeviceStream @Inject()(val database: DBService)
       .filter(size => size.fSize.>(0L) && size.fSize.<=(maxSizeFiles))
       .sortBy(_.fParent.asc)
       .take(maxCalcFiles)
-      .to[List].result).map { rowSeq =>
+      .result).map { rowSeq =>
 
       FileUtils.getDevicesInfo() onComplete {
         case Success(sucLabel2Drive) =>

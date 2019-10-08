@@ -101,10 +101,10 @@ class SmView @Inject()(val database: DBService)
     * @param sha256 sha256
     * @return list files
     */
-  def getFilesFromSha256(sha256: Option[String]): Future[List[(String, String, String, Option[String])]] = {
+  def getFilesFromSha256(sha256: Option[String]): Future[Seq[(String, String, String, Option[String])]] = {
     val rowSeq = database.runAsync(Tables.SmFileCard
       .filter(_.sha256 === sha256)
-      .map(fc => (fc.storeName, fc.fParent, fc.fName, fc.fMimeTypeJava)).to[List].result)
+      .map(fc => (fc.storeName, fc.fParent, fc.fName, fc.fMimeTypeJava)).result)
       .map(rowSeq => rowSeq)
 
     rowSeq
@@ -119,12 +119,12 @@ class SmView @Inject()(val database: DBService)
     * @param fName     fName
     * @return list files
     */
-  def getFilesByNaturalKey(deviceUid: String, path: String, fName: String): Future[List[(String, String, String, Option[String])]] = {
+  def getFilesByNaturalKey(deviceUid: String, path: String, fName: String): Future[Seq[(String, String, String, Option[String])]] = {
     val rowSeq = database.runAsync(Tables.SmFileCard
       .filter(_.storeName === deviceUid)
       .filter(_.fParent === path)
       .filter(_.fName === fName)
-      .map(fc => (fc.storeName, fc.fParent, fc.fName, fc.fMimeTypeJava)).to[List].result)
+      .map(fc => (fc.storeName, fc.fParent, fc.fName, fc.fMimeTypeJava)).result)
       .map(rowSeq => rowSeq)
 
     rowSeq

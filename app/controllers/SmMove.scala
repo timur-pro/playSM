@@ -187,7 +187,7 @@ class SmMove @Inject()(val database: DBService)
   def moveByDevice(device: Device, maxJob: Int, maxMoveFiles: Int): String = {
     debugParam
 
-    database.runAsync(Tables.SmPathMove.filter(_.storeName === device.uuid).take(maxJob).to[List].result).map { moveJobRow =>
+    database.runAsync(Tables.SmPathMove.filter(_.storeName === device.uuid).take(maxJob).result).map { moveJobRow =>
       debug(moveJobRow)
       moveJobRow.foreach { rowMove =>
         val pathFrom = rowMove.pathFrom
@@ -200,7 +200,7 @@ class SmMove @Inject()(val database: DBService)
           .filter(_.storeName === rowMove.storeName)
           .filter(_.fParent === pathFrom)
           .take(maxMoveFiles)
-          .to[List].result).map { rowFcSeq =>
+          .result).map { rowFcSeq =>
           rowFcSeq.foreach { rowFc =>
             debug(rowFc)
             try {
