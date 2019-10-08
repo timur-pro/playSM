@@ -57,11 +57,7 @@ class SmReport @Inject()(val database: DBService)
     implicit val getDateTimeResult: AnyRef with GetResult[DateTime] = GetResult(r => new DateTime(r.nextTimestamp()))
 
     val qry = sql"""
-      SELECT f_parent,
-             f_name,
-             f_last_modified_date
-      FROM sm_file_card fc
-      WHERE store_name = '#$device'
+      SELECT f_parent, f_name, f_last_modified_date FROM sm_file_card fc WHERE store_name = '#$device'
       AND   sha256 IS NOT NULL
       AND   NOT EXISTS (SELECT 1
                         FROM sm_file_card
@@ -71,13 +67,26 @@ class SmReport @Inject()(val database: DBService)
                         AND   store_name IN (#$backUpVolumes))
                         AND   NOT f_parent LIKE '%^_files' ESCAPE '^'
       AND   NOT f_parent LIKE '%^_files' escape '^'
-      ORDER BY f_parent,
-               f_name
-       LIMIT #$maxRows
-      """
-      .as[(String, String, DateTime)]
-    database.runAsync(qry).map { rowSeq =>
-      Ok(views.html.sm_chk_device_backup(rowSeq))
+      ORDER BY f_parent, f_name LIMIT #$maxRows""".as[(String, String, DateTime)]
+
+    val cnt = sql"""
+      SELECT count(1) FROM sm_file_card fc WHERE store_name = '#$device'
+      AND   sha256 IS NOT NULL
+      AND   NOT EXISTS (SELECT 1
+                        FROM sm_file_card
+                        WHERE sha256 IS NOT NULL
+                        AND   fc.sha256 = sha256
+                        AND   store_name != '#$device'
+                        AND   store_name IN (#$backUpVolumes))
+                        AND   NOT f_parent LIKE '%^_files' ESCAPE '^'
+      AND   NOT f_parent LIKE '%^_files' escape '^'
+      """.as[Int]
+
+    val composedAction = for {cnt <- cnt
+                              qry <- qry} yield (cnt, qry)
+
+    database.runAsync(composedAction).map { rowSeq =>
+      Ok(views.html.sm_chk_device_backup(rowSeq._1, maxRows, rowSeq._2))
     }
   }
 
