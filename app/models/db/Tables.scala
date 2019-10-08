@@ -45,15 +45,15 @@ trait Tables {
     def ? = (Rep.Some(id), Rep.Some(fName), categoryType, subCategoryType, description).shaped.<>({ r => import r._; _1.map(_ => SmCategoryFcRow.tupled((_1.get, _2.get, _3, _4, _5))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column ID SqlType(varchar) */
-    val id: Rep[String] = column[String]("ID")
+    val id: Rep[String] = column[String]("id")
     /** Database column F_NAME SqlType(varchar) */
-    val fName: Rep[String] = column[String]("F_NAME")
+    val fName: Rep[String] = column[String]("f_name")
     /** Database column CATEGORY_TYPE SqlType(varchar), Default(None) */
-    val categoryType: Rep[Option[String]] = column[Option[String]]("CATEGORY_TYPE", O.Default(None))
+    val categoryType: Rep[Option[String]] = column[Option[String]]("category_type", O.Default(None))
     /** Database column SUB_CATEGORY_TYPE SqlType(varchar), Default(None) */
-    val subCategoryType: Rep[Option[String]] = column[Option[String]]("SUB_CATEGORY_TYPE", O.Default(None))
+    val subCategoryType: Rep[Option[String]] = column[Option[String]]("sub_category_type", O.Default(None))
     /** Database column DESCRIPTION SqlType(varchar), Default(None) */
-    val description: Rep[Option[String]] = column[Option[String]]("DESCRIPTION", O.Default(None))
+    val description: Rep[Option[String]] = column[Option[String]]("description", O.Default(None))
 
     /** Primary key of SmCategoryFc (database name sm_category_fc_pkey) */
     val pk = primaryKey("sm_category_fc_pkey", (id, fName))
@@ -64,14 +64,14 @@ trait Tables {
 
   /** Entity class storing rows of table SmDevice
     *
-    * @param id       Database column ID SqlType(serial), AutoInc, PrimaryKey
-    * @param name     Database column NAME SqlType(varchar)
-    * @param label    Database column LABEL SqlType(varchar)
-    * @param uid      Database column UID SqlType(varchar)
-    * @param syncDate Database column SYNC_DATE SqlType(timestamp)
-    * @param describe Database column DESCRIBE SqlType(varchar), Default(None)
-    * @param visible  Database column VISIBLE SqlType(bool), Default(true)
-    * @param reliable Database column RELIABLE SqlType(bool), Default(true) */
+    * @param id       Database column id SqlType(serial), AutoInc, PrimaryKey
+    * @param name     Database column name SqlType(varchar)
+    * @param label    Database column label SqlType(varchar)
+    * @param uid      Database column uid SqlType(varchar)
+    * @param syncDate Database column sync_date SqlType(timestamp)
+    * @param describe Database column describe SqlType(varchar), Default(None)
+    * @param visible  Database column visible SqlType(bool), Default(true)
+    * @param reliable Database column reliable SqlType(bool), Default(true) */
   case class SmDeviceRow(id: Int,
                          name: String,
                          label: String,
@@ -104,24 +104,24 @@ trait Tables {
     def * = (id, name, label, uid, syncDate, describe, visible, reliable) <> (SmDeviceRow.tupled, SmDeviceRow.unapply)
 
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(name), Rep.Some(label), Rep.Some(uid), Rep.Some(syncDate), describe, Rep.Some(visible), Rep.Some(reliable)).shaped.<>({ r => import r._; _1.map(_ => SmDeviceRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6, _7.get, _8.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
+    def ? = ((Rep.Some(id), Rep.Some(name), Rep.Some(label), Rep.Some(uid), Rep.Some(syncDate), describe, Rep.Some(visible), Rep.Some(reliable))).shaped.<>({ r => import r._; _1.map(_ => SmDeviceRow.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6, _7.get, _8.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
 
-    /** Database column ID SqlType(serial), AutoInc, PrimaryKey */
-    val id: Rep[Int] = column[Int]("ID", O.AutoInc, O.PrimaryKey)
-    /** Database column NAME SqlType(varchar) */
-    val name: Rep[String] = column[String]("NAME")
-    /** Database column LABEL SqlType(varchar) */
-    val label: Rep[String] = column[String]("LABEL")
-    /** Database column UID SqlType(varchar) */
-    val uid: Rep[String] = column[String]("UID")
-    /** Database column SYNC_DATE SqlType(timestamp) */
-    val syncDate: Rep[java.time.LocalDateTime] = column[java.time.LocalDateTime]("SYNC_DATE")
-    /** Database column DESCRIBE SqlType(varchar), Default(None) */
-    val describe: Rep[Option[String]] = column[Option[String]]("DESCRIBE", O.Default(None))
-    /** Database column VISIBLE SqlType(bool), Default(true) */
-    val visible: Rep[Boolean] = column[Boolean]("VISIBLE", O.Default(true))
-    /** Database column RELIABLE SqlType(bool), Default(true) */
-    val reliable: Rep[Boolean] = column[Boolean]("RELIABLE", O.Default(true))
+    /** Database column id SqlType(serial), AutoInc, PrimaryKey */
+    val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column name SqlType(varchar) */
+    val name: Rep[String] = column[String]("name")
+    /** Database column label SqlType(varchar) */
+    val label: Rep[String] = column[String]("label")
+    /** Database column uid SqlType(varchar) */
+    val uid: Rep[String] = column[String]("uid")
+    /** Database column sync_date SqlType(timestamp) */
+    val syncDate: Rep[java.time.LocalDateTime] = column[java.time.LocalDateTime]("sync_date")
+    /** Database column describe SqlType(varchar), Default(None) */
+    val describe: Rep[Option[String]] = column[Option[String]]("describe", O.Default(None))
+    /** Database column visible SqlType(bool), Default(true) */
+    val visible: Rep[Boolean] = column[Boolean]("visible", O.Default(true))
+    /** Database column reliable SqlType(bool), Default(true) */
+    val reliable: Rep[Boolean] = column[Boolean]("reliable", O.Default(true))
   }
 
   /** Collection-like TableQuery object for table SmDevice */
@@ -167,47 +167,47 @@ trait Tables {
     def ? = ((Rep.Some(id), dateTime, dateTimeOriginal, dateTimeDigitized, make, model, software, exifImageWidth, exifImageHeight, gpsVersionId, gpsLatitudeRef, gpsLatitude, gpsLongitudeRef, gpsLongitude, gpsAltitudeRef, gpsAltitude, gpsTimeStamp, gpsProcessingMethod, gpsDateStamp, gpsLatitudeDec, gpsLongitudeDec)).shaped.<>({ r => import r._; _1.map(_ => SmExifRow.tupled((_1.get, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, _20, _21))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column ID SqlType(varchar), PrimaryKey */
-    val id: Rep[String] = column[String]("ID", O.PrimaryKey)
+    val id: Rep[String] = column[String]("id", O.PrimaryKey)
     /** Database column DATE_TIME SqlType(timestamp), Default(None) */
-    val dateTime: Rep[Option[java.time.LocalDateTime]] = column[Option[java.time.LocalDateTime]]("DATE_TIME", O.Default(None))
+    val dateTime: Rep[Option[java.time.LocalDateTime]] = column[Option[java.time.LocalDateTime]]("date_time", O.Default(None))
     /** Database column DATE_TIME_ORIGINAL SqlType(timestamp), Default(None) */
-    val dateTimeOriginal: Rep[Option[java.time.LocalDateTime]] = column[Option[java.time.LocalDateTime]]("DATE_TIME_ORIGINAL", O.Default(None))
+    val dateTimeOriginal: Rep[Option[java.time.LocalDateTime]] = column[Option[java.time.LocalDateTime]]("date_time_original", O.Default(None))
     /** Database column DATE_TIME_DIGITIZED SqlType(timestamp), Default(None) */
-    val dateTimeDigitized: Rep[Option[java.time.LocalDateTime]] = column[Option[java.time.LocalDateTime]]("DATE_TIME_DIGITIZED", O.Default(None))
+    val dateTimeDigitized: Rep[Option[java.time.LocalDateTime]] = column[Option[java.time.LocalDateTime]]("date_time_digitized", O.Default(None))
     /** Database column MAKE SqlType(varchar), Default(None) */
-    val make: Rep[Option[String]] = column[Option[String]]("MAKE", O.Default(None))
+    val make: Rep[Option[String]] = column[Option[String]]("make", O.Default(None))
     /** Database column MODEL SqlType(varchar), Default(None) */
-    val model: Rep[Option[String]] = column[Option[String]]("MODEL", O.Default(None))
+    val model: Rep[Option[String]] = column[Option[String]]("model", O.Default(None))
     /** Database column SOFTWARE SqlType(varchar), Default(None) */
-    val software: Rep[Option[String]] = column[Option[String]]("SOFTWARE", O.Default(None))
+    val software: Rep[Option[String]] = column[Option[String]]("software", O.Default(None))
     /** Database column EXIF_IMAGE_WIDTH SqlType(varchar), Default(None) */
-    val exifImageWidth: Rep[Option[String]] = column[Option[String]]("EXIF_IMAGE_WIDTH", O.Default(None))
+    val exifImageWidth: Rep[Option[String]] = column[Option[String]]("exif_image_width", O.Default(None))
     /** Database column EXIF_IMAGE_HEIGHT SqlType(varchar), Default(None) */
-    val exifImageHeight: Rep[Option[String]] = column[Option[String]]("EXIF_IMAGE_HEIGHT", O.Default(None))
+    val exifImageHeight: Rep[Option[String]] = column[Option[String]]("exif_image_height", O.Default(None))
     /** Database column GPS_VERSION_ID SqlType(varchar), Default(None) */
-    val gpsVersionId: Rep[Option[String]] = column[Option[String]]("GPS_VERSION_ID", O.Default(None))
+    val gpsVersionId: Rep[Option[String]] = column[Option[String]]("gps_version_id", O.Default(None))
     /** Database column GPS_LATITUDE_REF SqlType(varchar), Default(None) */
-    val gpsLatitudeRef: Rep[Option[String]] = column[Option[String]]("GPS_LATITUDE_REF", O.Default(None))
+    val gpsLatitudeRef: Rep[Option[String]] = column[Option[String]]("gps_latitude_ref", O.Default(None))
     /** Database column GPS_LATITUDE SqlType(varchar), Default(None) */
-    val gpsLatitude: Rep[Option[String]] = column[Option[String]]("GPS_LATITUDE", O.Default(None))
+    val gpsLatitude: Rep[Option[String]] = column[Option[String]]("gps_latitude", O.Default(None))
     /** Database column GPS_LONGITUDE_REF SqlType(varchar), Default(None) */
-    val gpsLongitudeRef: Rep[Option[String]] = column[Option[String]]("GPS_LONGITUDE_REF", O.Default(None))
+    val gpsLongitudeRef: Rep[Option[String]] = column[Option[String]]("gps_longitude_ref", O.Default(None))
     /** Database column GPS_LONGITUDE SqlType(varchar), Default(None) */
-    val gpsLongitude: Rep[Option[String]] = column[Option[String]]("GPS_LONGITUDE", O.Default(None))
+    val gpsLongitude: Rep[Option[String]] = column[Option[String]]("gps_longitude", O.Default(None))
     /** Database column GPS_ALTITUDE_REF SqlType(varchar), Default(None) */
-    val gpsAltitudeRef: Rep[Option[String]] = column[Option[String]]("GPS_ALTITUDE_REF", O.Default(None))
+    val gpsAltitudeRef: Rep[Option[String]] = column[Option[String]]("gps_altitude_ref", O.Default(None))
     /** Database column GPS_ALTITUDE SqlType(varchar), Default(None) */
-    val gpsAltitude: Rep[Option[String]] = column[Option[String]]("GPS_ALTITUDE", O.Default(None))
+    val gpsAltitude: Rep[Option[String]] = column[Option[String]]("gps_altitude", O.Default(None))
     /** Database column GPS_TIME_STAMP SqlType(varchar), Default(None) */
-    val gpsTimeStamp: Rep[Option[String]] = column[Option[String]]("GPS_TIME_STAMP", O.Default(None))
+    val gpsTimeStamp: Rep[Option[String]] = column[Option[String]]("gps_time_stamp", O.Default(None))
     /** Database column GPS_PROCESSING_METHOD SqlType(varchar), Default(None) */
-    val gpsProcessingMethod: Rep[Option[String]] = column[Option[String]]("GPS_PROCESSING_METHOD", O.Default(None))
+    val gpsProcessingMethod: Rep[Option[String]] = column[Option[String]]("gps_processing_method", O.Default(None))
     /** Database column GPS_DATE_STAMP SqlType(varchar), Default(None) */
-    val gpsDateStamp: Rep[Option[String]] = column[Option[String]]("GPS_DATE_STAMP", O.Default(None))
+    val gpsDateStamp: Rep[Option[String]] = column[Option[String]]("gps_date_stamp", O.Default(None))
     /** Database column GPS_LATITUDE_DEC SqlType(numeric), Default(None) */
-    val gpsLatitudeDec: Rep[Option[scala.math.BigDecimal]] = column[Option[scala.math.BigDecimal]]("GPS_LATITUDE_DEC", O.Default(None))
+    val gpsLatitudeDec: Rep[Option[scala.math.BigDecimal]] = column[Option[scala.math.BigDecimal]]("gps_latitude_dec", O.Default(None))
     /** Database column GPS_LONGITUDE_DEC SqlType(numeric), Default(None) */
-    val gpsLongitudeDec: Rep[Option[scala.math.BigDecimal]] = column[Option[scala.math.BigDecimal]]("GPS_LONGITUDE_DEC", O.Default(None))
+    val gpsLongitudeDec: Rep[Option[scala.math.BigDecimal]] = column[Option[scala.math.BigDecimal]]("gps_longitude_dec", O.Default(None))
   }
 
   /** Collection-like TableQuery object for table SmExif */
@@ -265,27 +265,27 @@ trait Tables {
     /** Maps whole row to an option. Useful for outer joins. */
     def ? = (Rep.Some(id), Rep.Some(storeName), Rep.Some(fParent), Rep.Some(fName), fExtension, Rep.Some(fCreationDate), Rep.Some(fLastModifiedDate), fSize, fMimeTypeJava, sha256, Rep.Some(fNameLc)).shaped.<>({ r => import r._; _1.map(_ => SmFileCardRow.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6.get, _7.get, _8, _9, _10, _11.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
 
-    val id: Rep[String] = column[String]("ID", O.PrimaryKey)
+    val id: Rep[String] = column[String]("id", O.PrimaryKey)
 
-    val storeName: Rep[String] = column[String]("STORE_NAME")
+    val storeName: Rep[String] = column[String]("store_name")
 
-    val fParent: Rep[String] = column[String]("F_PARENT")
+    val fParent: Rep[String] = column[String]("f_parent")
 
-    val fName: Rep[String] = column[String]("F_NAME")
+    val fName: Rep[String] = column[String]("f_name")
 
-    val fExtension: Rep[Option[String]] = column[Option[String]]("F_EXTENSION", O.Default(None))
+    val fExtension: Rep[Option[String]] = column[Option[String]]("f_extension", O.Default(None))
 
-    val fCreationDate: Rep[java.time.LocalDateTime] = column[java.time.LocalDateTime]("F_CREATION_DATE")
+    val fCreationDate: Rep[java.time.LocalDateTime] = column[java.time.LocalDateTime]("f_creation_date")
 
-    val fLastModifiedDate: Rep[java.time.LocalDateTime] = column[java.time.LocalDateTime]("F_LAST_MODIFIED_DATE")
+    val fLastModifiedDate: Rep[java.time.LocalDateTime] = column[java.time.LocalDateTime]("f_last_modified_date")
 
-    val fSize: Rep[Option[Long]] = column[Option[Long]]("F_SIZE", O.Default(None))
+    val fSize: Rep[Option[Long]] = column[Option[Long]]("f_size", O.Default(None))
 
-    val fMimeTypeJava: Rep[Option[String]] = column[Option[String]]("F_MIME_TYPE_JAVA", O.Default(None))
+    val fMimeTypeJava: Rep[Option[String]] = column[Option[String]]("f_mime_type_java", O.Default(None))
 
-    val sha256: Rep[Option[String]] = column[Option[String]]("SHA256", O.Default(None))
+    val sha256: Rep[Option[String]] = column[Option[String]]("sha256", O.Default(None))
 
-    val fNameLc: Rep[String] = column[String]("F_NAME_LC")
+    val fNameLc: Rep[String] = column[String]("f_name_lc")
 
     /** Index over (fParent) (database name f_parent_idx) */
     val index1 = index("f_parent_idx", fParent)
@@ -320,13 +320,13 @@ trait Tables {
     /** Maps whole row to an option. Useful for outer joins. */
     def ? = (Rep.Some(id), Rep.Some(storeName), Rep.Some(pathFrom), Rep.Some(pathTo)).shaped.<>({ r => import r._; _1.map(_ => SmPathMoveRow.tupled((_1.get, _2.get, _3.get, _4.get))) }, (_: Any) => throw new Exception("Inserting into ? projection not supported."))
 
-    val id: Rep[Int] = column[Int]("ID", O.AutoInc, O.PrimaryKey)
+    val id: Rep[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
 
-    val storeName: Rep[String] = column[String]("STORE_NAME")
+    val storeName: Rep[String] = column[String]("store_name")
 
-    val pathFrom: Rep[String] = column[String]("PATH_FROM")
+    val pathFrom: Rep[String] = column[String]("path_from")
 
-    val pathTo: Rep[String] = column[String]("PATH_TO")
+    val pathTo: Rep[String] = column[String]("path_to")
   }
 
   /** Collection-like TableQuery object for table SmPathMove */

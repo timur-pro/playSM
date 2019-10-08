@@ -27,17 +27,17 @@ class SmView @Inject()(val database: DBService)
     debugParam
 
     val qry = sql"""
-       select distinct split_part(fc."F_PARENT", '/', #$depth),
-                       cast(sum("F_SIZE") / 1024 /1024 as int),
+       select distinct split_part(fc.f_parent, '/', #$depth),
+                       cast(sum(f_size) / 1024 /1024 as int),
                        count(1),
                        count(1) filter (where sm_category_fc is null),
-                       array_agg(DISTINCT sm_category_fc."CATEGORY_TYPE") filter (where sm_category_fc is not null)
+                       array_agg(DISTINCT sm_category_fc.category_type) filter (where sm_category_fc is not null)
        FROM "sm_file_card" fc
-              left outer join sm_category_fc on fc."SHA256" = sm_category_fc."ID"
-       where fc."STORE_NAME" = '#$deviceName'
-       and fc."F_SIZE" > 0
-       GROUP BY split_part(fc."F_PARENT", '/', #$depth)
-       ORDER BY split_part(fc."F_PARENT", '/', #$depth)
+              left outer join sm_category_fc on fc.sha256 = sm_category_fc.id
+       where fc.store_name = '#$deviceName'
+       and fc.f_size > 0
+       GROUP BY split_part(fc.f_parent, '/', #$depth)
+       ORDER BY split_part(fc.f_parent, '/', #$depth)
       """
       .as[(String, Int, Int, Int, String)]
 
@@ -171,11 +171,11 @@ class SmView @Inject()(val database: DBService)
 
     val qry = sql"""
        SELECT
-         "F_NAME",
-         "F_PARENT",
-         "STORE_NAME"
-       FROM "sm_file_card" card
-       WHERE "SHA256" = '#$sha256'
+         f_name,
+         f_parent,
+         store_name
+       FROM sm_file_card card
+       WHERE sha256 = '#$sha256'
       """
       .as[(String, String, String)]
     database.runAsync(qry).map { rowSeq =>
@@ -189,9 +189,9 @@ class SmView @Inject()(val database: DBService)
     debugParam
 
     val qry = sql"""
-      select distinct ("F_PARENT")
+      select distinct (f_parent)
       from sm_file_card
-      where "STORE_NAME" = '#$deviceName';
+      where store_name = '#$deviceName';
       """
       .as[String]
 

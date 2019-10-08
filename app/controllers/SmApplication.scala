@@ -28,16 +28,16 @@ class SmApplication @Inject()(implicit assetsFinder: AssetsFinder,val database: 
 
     val qry = sql"""
       SELECT
-        x2."NAME",
-        x2."LABEL",
-        x2."UID",
-        x2."DESCRIBE",
-        x2."SYNC_DATE",
-        x2."RELIABLE",
-      (SELECT count(1) FROM "sm_file_card" x3 WHERE x3."STORE_NAME" = x2."UID" AND (x3."SHA256" IS NULL)  AND (x3."F_SIZE" > 0))
-      FROM "sm_device" x2
-      where x2."VISIBLE" is true
-      ORDER BY x2."LABEL"
+        x2.name,
+        x2.label,
+        x2.uid,
+        x2.describe,
+        x2.sync_date,
+        x2.reliable,
+      (SELECT count(1) FROM sm_file_card x3 WHERE x3.store_name = x2.uid AND (x3.sha256 IS NULL)  AND (x3.f_size > 0))
+      FROM sm_device x2
+      where x2.visible is true
+      ORDER BY x2.label
       """
       .as[(String, String, String, String, DateTime, Boolean, Int)]
     database.runAsync(qry).map { rowSeq =>

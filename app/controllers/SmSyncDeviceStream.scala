@@ -72,15 +72,15 @@ class SmSyncDeviceStream @Inject()(val database: DBService)
 
     val qry = sql"""
       SELECT
-        x2."NAME",
-        x2."LABEL",
-        x2."UID",
-        x2."DESCRIBE",
-        x2."SYNC_DATE",
-        x2."VISIBLE",
-        x2."RELIABLE"
-      FROM "sm_device" x2
-      ORDER BY x2."LABEL"
+        x2.name,
+        x2.label,
+        x2.uid,
+        x2.describe,
+        x2.sync_date,
+        x2.visible,
+        x2.reliable
+      FROM sm_device x2
+      ORDER BY x2.label
       """
       .as[(String, String, String, String, DateTime, Boolean, Boolean)]
     database.runAsync(qry).map { rowSeq =>
