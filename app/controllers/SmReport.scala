@@ -144,6 +144,8 @@ class SmReport @Inject()(val database: DBService)
     val device_Unreliable: String = config.getStringList("BackUp.allFiles.device_Unreliable").asScala.toSet.mkString("'", "', '", "'")
     val device_NotView: String = config.getStringList("BackUp.allFiles.device_NotView").asScala.toSet.mkString("'", "', '", "'")
 
+    implicit val getDateTimeResult: AnyRef with GetResult[DateTime] = GetResult(r => new DateTime(r.nextTimestamp()))
+
     debug(device_Unreliable)
     debug(device_NotView)
 
@@ -151,7 +153,8 @@ class SmReport @Inject()(val database: DBService)
        SELECT
          sha256,
          f_name,
-         store_name
+         store_name,
+         f_last_modified_date
        FROM (
               SELECT
                 card.sha256,
@@ -160,7 +163,8 @@ class SmReport @Inject()(val database: DBService)
                  FROM sm_file_card sq
                  WHERE sq.sha256 = card.sha256
                  AND   sq.store_name NOT IN (#$device_Unreliable)
-                 LIMIT 1) AS store_name
+                 LIMIT 1) AS store_name,
+                 card.f_last_modified_date
               FROM sm_file_card card
               WHERE card.f_last_modified_date >= date_trunc('month', card.f_last_modified_date) - INTERVAL '1 year'
               GROUP BY card.sha256,
@@ -172,7 +176,7 @@ class SmReport @Inject()(val database: DBService)
        WHERE store_name NOT IN (#$device_NotView)
        LIMIT #$maxRows
       """
-      .as[(String, String, String)]
+      .as[(String, String, String, DateTime)]
     database.runAsync(qry).map { rowSeq =>
       Ok(views.html.sm_chk_backup_last_year(rowSeq, device_Unreliable, device_NotView, cntFiles, rowSeq.length, maxRows))
     }
