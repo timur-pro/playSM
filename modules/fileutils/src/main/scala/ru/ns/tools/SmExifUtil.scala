@@ -50,6 +50,7 @@ object SmExifUtil {
                    | "Date/Time" | "Date/Time Original" | "Date/Time Digitized"
                    | "Exif Image Width" | "Exif Image Height"
               => hTags = hTags + (tag.getTagName -> tag.getDescription)
+              case dfg if dfg.startsWith("GPS ") => println("!!! " + (tag.getTagName -> tag.getDescription))
               case _ =>
             }
           }
